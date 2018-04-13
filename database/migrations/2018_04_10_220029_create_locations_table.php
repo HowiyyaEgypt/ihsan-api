@@ -15,8 +15,12 @@ class CreateLocationsTable extends Migration
     {
         Schema::create('locations', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('long', 10, 7);
-            $table->decimal('lat', 10, 7);
+            $table->decimal('lng', 10, 7);
+            $table->decimal('lat', 10, 8);
+            $table->boolean('is_visible')->default(true);
+            $table->string('locationable_type');
+            $table->integer('locationable_id');
+            $table->boolean('favorite')->default(false);
             $table->integer('city_id')->unsigned();
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
             $table->timestamps();

@@ -7,6 +7,21 @@ use Illuminate\Database\Eloquent\Model;
 class Meal extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'bellies',
+        'comment',
+        'photo',
+        'expiration_date',
+        'stage',
+        'pick_up_location_id',
+        'drop_location_id'
+    ];
+
+    /**
      * The drop location for this meal
      */
     public function delivery()
@@ -25,9 +40,9 @@ class Meal extends Model
     /**
      * The drop location for this meal
      */
-    public function dropLocation()
+    public function kitchen()
     {
-        return $this->belongsTo('App\Location', 'drop_location_id');
+        return $this->belongsTo('App\Kitchen');
     }
 
     /**

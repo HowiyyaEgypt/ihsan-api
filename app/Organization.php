@@ -19,7 +19,7 @@ class Organization extends Model
      */
     public function locations()
     {
-        return $this->morphToMany('App\Location', 'locationable');
+        return $this->morphMany('App\Location', 'locationable');
     }
 
     /**

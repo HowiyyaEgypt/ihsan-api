@@ -22,8 +22,8 @@ class CreateMealsTable extends Migration
             $table->integer('stage')->default(0);
             $table->integer('pick_up_location_id')->unsigned()->nullable();
             $table->foreign('pick_up_location_id')->references('id')->on('locations')->onDelete('cascade');
-            $table->integer('drop_location_id')->unsigned()->nullable();
-            $table->foreign('drop_location_id')->references('id')->on('locations')->onDelete('cascade');
+            $table->integer('kitchen_id')->unsigned()->nullable();
+            $table->foreign('kitchen_id')->references('id')->on('kitchens')->onDelete('cascade');
             $table->timestamps();
         });
     }

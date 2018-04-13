@@ -7,19 +7,26 @@ use Illuminate\Database\Eloquent\Model;
 class Location extends Model
 {
     /**
-     * Get all of the users that are assigned this location.
+     * The attributes that are mass assignable.
+     *
+     * @var array
      */
-    public function users()
-    {
-        return $this->morphedByMany('App\User', 'locationable');
-    }
-
+    protected $fillable = [
+        'lng',
+        'lat',
+        'city_id',
+        'locationable_type',
+        'locationable_id',
+        'favorite',
+        'is_visible'
+    ];
+    
     /**
-     * Get all of the users that are assigned this location.
+     * Get all of the owning locationable models.
      */
-    public function organizations()
+    public function locationable()
     {
-        return $this->morphedByMany('App\Organization', 'locationable');
+        return $this->morphTo();
     }
 
     /**
@@ -41,9 +48,9 @@ class Location extends Model
     /**
      * The meals that was picked up from this location
      */
-    public function dropedMeals()
+    public function kitchens()
     {
-        return $this->hasMany('App\Meal', 'drop_location_id');
+        return $this->hasMany('App\Kitchen');
     }
 
     /**
