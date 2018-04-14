@@ -68,4 +68,24 @@ class Location extends Model
     {
         return $this->hasMany('App\Donation');
     }
+
+    /**
+     * get the nearest locations
+     */
+    public function scopeNearLocations($query, $lat, $lng, $range = 5)
+    {
+        $select = "locations.*, 6371 * 2 * ASIN(SQRT( POWER(SIN((" .$lat. " - lat)*pi()/180/2),2) + COS(".$lat."*pi()/180 )*COS(lat*pi()/180)*POWER(SIN((".$lng."-lng)*pi()/180/2),2))) as distance";
+
+        $query->selectRaw( $select )
+            ->having('distance', '<=', $range)
+            ->orderBy('distance', 'ASC');
+    }
+
+     /**
+     * Alias For scopeNearLocations
+     */
+    public function scopeNearBy( $query, $long, $lat, $range = 5 )
+    {
+        $query->nearLocations( $long, $lat, $range );
+    }
 }

@@ -7,6 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 class Organization extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'founder_id',
+        'points',
+        'level',
+        'photo',
+        'bio'
+    ];
+
+    /**
+     * the founder of the organization
+     */
+    public function founder()
+    {
+        return $this->belongsTo('App\User', 'founder_id');
+    }
+
+    /**
      * Get all of the user who joined the organization.
      */
     public function users()
@@ -44,5 +67,13 @@ class Organization extends Model
     public function donations()
     {
         return $this->morphToMany('App\Donation', 'donationable');
+    }
+
+    /**
+     * Get all of the kitchens for the organization.
+     */
+    public function kitchens()
+    {
+        return $this->hasMany('App\Kitchen');
     }
 }

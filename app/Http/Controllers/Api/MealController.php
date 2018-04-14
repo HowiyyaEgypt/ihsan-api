@@ -44,8 +44,8 @@ class MealController extends Controller
         $validator = Validator::make($request->all(), [
             'bellies'               => 'required|integer|min:1',
             'expiration_date'       => 'required|integer|min:'. $valid_meal_ttl ,
-            'stage'                 => 'nullable|integer|between:1,5',
-            'pick_up_location_id'   => 'required|exists:locations,id'
+            'pick_up_location_id'   => 'required|exists:locations,id',
+            'kitchen_id'            => 'required|exists:kitchens,id'
         ]);
 
         if ( $validator->fails() ){

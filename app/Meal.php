@@ -18,7 +18,7 @@ class Meal extends Model
         'expiration_date',
         'stage',
         'pick_up_location_id',
-        'drop_location_id'
+        'kitchen_id'
     ];
 
     /**

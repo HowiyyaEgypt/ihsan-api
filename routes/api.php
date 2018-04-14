@@ -27,6 +27,18 @@ Route::get('locations/history', 'LocationController@history');
 Route::post('locations/add', 'LocationController@add');
 Route::post('locations/{location}/delete', 'LocationController@delete');
 
+// Organizations routes
+Route::post('organization/register', 'OrganizationController@register');
+
+// Kitchens routes
+Route::get('kitchens/nearby/{location?}', 'KitchenController@nearby');
+Route::get('kitchens/{organization}/today', 'KitchenController@today');
+Route::get('kitchens/{organization}/upcomming', 'KitchenController@upcomming');
+Route::get('kitchens/{organization}/history', 'KitchenController@history');
+Route::post('kitchens/{organization}/create', 'KitchenController@create');
+Route::post('kitchens/{organization}/edit/{kitchen}', 'KitchenController@edit');
+Route::post('kitchens/{organization}/delete/{kitchen}', 'KitchenController@delete');
+
 // Meals routes
 Route::post('meals/donate', 'MealController@donate');
 Route::get('meals/history', 'MealController@history');

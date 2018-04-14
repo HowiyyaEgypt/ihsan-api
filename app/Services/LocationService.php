@@ -7,7 +7,6 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exceptions\Api\ValidationException;
 
-
 trait LocationService {
 
     /**
