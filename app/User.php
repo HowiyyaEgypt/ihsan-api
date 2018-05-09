@@ -44,7 +44,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function meals()
     {
-        return $this->morphToMany('App\Meal', 'mealable');
+        return $this->morphToMany('App\Meal', 'mealable')->withTimestamps();
     }
 
     /**

@@ -13,7 +13,7 @@ class Meal extends Model
      */
     protected $fillable = [
         'bellies',
-        'comment',
+        'description',
         'photo',
         'expiration_date',
         'stage',

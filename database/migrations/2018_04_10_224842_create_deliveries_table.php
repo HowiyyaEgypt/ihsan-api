@@ -15,7 +15,7 @@ class CreateDeliveriesTable extends Migration
     {
         Schema::create('deliveries', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('comment');
+            $table->text('description');
             $table->text('photo')->nullable();
             $table->dateTime('pickup_date');
             $table->dateTime('delivery_date');

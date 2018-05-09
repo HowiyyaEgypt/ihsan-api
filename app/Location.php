@@ -18,7 +18,20 @@ class Location extends Model
         'locationable_type',
         'locationable_id',
         'favorite',
-        'is_visible'
+        'is_visible',
+        'description'
+    ];
+
+      /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'favorite' => 'boolean',
+        'is_visible' => 'boolean',
+        'lat' => 'double',
+        'lng' => 'double',
     ];
     
     /**

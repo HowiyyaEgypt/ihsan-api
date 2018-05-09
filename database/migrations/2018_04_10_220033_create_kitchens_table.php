@@ -16,7 +16,9 @@ class CreateKitchensTable extends Migration
         Schema::create('kitchens', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->text('comment')->nullable();
+            $table->text('description')->nullable();
+            $table->integer('city_id')->unsigned();
+            $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
             $table->integer('organization_id')->unsigned()->nullable();
             $table->foreign('organization_id')->references('id')->on('organizations')->onDelete('cascade');
             $table->integer('location_id')->unsigned()->nullable();

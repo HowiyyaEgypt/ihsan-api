@@ -20,13 +20,30 @@ trait KitchenService {
      */
     public function nearByKitchens(Request $request, Location $location = null)
     {
-        $lat = $request->get('lat');
-        $lng = $request->get('lng');
+        $nearby_kitchens = null;
 
-        $nearby_locations_have_kitchens = Location::nearLocations($lat, $lng)->has('kitchens')->pluck('id');
+        switch ($request->get('mode')) {
 
-        $nearby_kitchens = Kitchen::whereIn('location_id', $nearby_locations_have_kitchens)
-        ->stillHasTime()->get();
+            // we search using the city id
+            case 1:
+
+                $nearby_kitchens = Kitchen::where('city_id', $request->get('city_id'))->with(['city','organization','location'])->get();
+                break;
+
+            
+            // we search using the lat and lng
+            case 2:
+
+                $lat = $request->get('lat');
+                $lng = $request->get('lng');
+
+                $nearby_locations_have_kitchens = Location::nearLocations($lat, $lng)->has('kitchens')->pluck('id');
+
+                $nearby_kitchens = Kitchen::whereIn('location_id', $nearby_locations_have_kitchens)
+                ->with(['city','organization','location'])
+                ->stillHasTime()->get();
+                break;
+        }
     
         return $nearby_kitchens;
     }

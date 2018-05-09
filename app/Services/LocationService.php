@@ -30,6 +30,7 @@ trait LocationService {
         $lng = $request->get('lng');    
         $city_id = $request->get('city_id');    
         $favorite = $request->get('favorite');
+        $description = $request->get('description');
 
 
         // check if the user already has the same location
@@ -41,7 +42,7 @@ trait LocationService {
         // if empty, we will create it
         if (empty($location)) {
 
-            $location = $this->createNewLocation($mode, $user, $lat, $lng, $city_id, $favorite, $organization);
+            $location = $this->createNewLocation($mode, $user, $lat, $lng, $city_id, $favorite, $description, $organization);
             return $location;
         } 
 
@@ -91,17 +92,18 @@ trait LocationService {
      * @param [double] $lng
      * @param [int] $city_id
      * @param boolean $favorite
+     * @param [String] $description
      * @param [organization] $organization
      * @return void
      */
-    public function createNewLocation($mode, $user, $lat, $lng, $city_id, $favorite, $organization = null)
+    public function createNewLocation($mode, $user, $lat, $lng, $city_id, $favorite, $description, $organization = null)
     {
         
         if(is_null($favorite)) {
             $favorite = false;
         }
 
-        $location = Location::create(['lat' =>$lat , 'lng' =>$lng , 'city_id' => $city_id, 'locationable_type' => 'App\User', 'locationable_id' => $user->id, 'favorite' => $favorite ]); 
+        $location = Location::create(['description' => $description, 'lat' =>$lat , 'lng' =>$lng , 'city_id' => $city_id, 'locationable_type' => 'App\User', 'locationable_id' => $user->id, 'favorite' => $favorite ]); 
         
         switch ($mode) {
             case 1:

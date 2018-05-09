@@ -15,10 +15,15 @@ use App\Http\Resources\Api\User\UserResource;
 
 class UserController extends Controller
 {
+
+    /**
+     * @SWG\Info(title="Ihsan APIs Documentation", version="1.0")
+    */
+
     /**
      * Register a new user
      */
-    public function register(Request $request)
+    public function signup(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name'      => 'required|min:2',
@@ -32,7 +37,7 @@ class UserController extends Controller
 
         $user = User::create($request->only('name', 'password', 'email', 'gender'));
 
-        $user_resource = new UserResource($user);
+        $user_resource = (new UserResource($user))->additional(['success' => true, 'message' => 'A new user was created!']);
         $user_resource->setAdditionalData($user);
 
         return $user_resource->response()->setStatusCode(200);
@@ -62,7 +67,7 @@ class UserController extends Controller
         if (empty($user) || (!empty($user) && !(\Hash::check($password, $user->password))))
             throw new InvalidCredentialsException(trans('auth.failed'));
 
-        $user_resource = new UserResource($user);
+        $user_resource = (new UserResource($user))->additional(['success' => true, 'message' => 'A new user was created!']);
         $user_resource->setAdditionalData($user);
 
         return $user_resource->response()->setStatusCode(200);

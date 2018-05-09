@@ -17,6 +17,8 @@ class CreateCitiesTable extends Migration
             $table->increments('id');
             $table->string('name_ar');
             $table->string('name_en');
+            $table->decimal('lat', 10, 8)->nullable();
+            $table->decimal('lng', 10, 7)->nullable();
             $table->timestamps();
         });
     }

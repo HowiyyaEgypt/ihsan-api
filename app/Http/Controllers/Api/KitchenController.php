@@ -15,8 +15,10 @@ use App\Location;
 use App\Services\APIAuthTrait;
 use App\Services\OrganizationService;
 use App\Services\KitchenService;
+use App\Http\Resources\Api\Kitchen\KitchenResource;
 
 use App\Exceptions\Api\ValidationException;
+
 
 class KitchenController extends Controller
 {
@@ -31,9 +33,25 @@ class KitchenController extends Controller
      */
     public function nearby(Request $request, Location $location)
     {
+        $validator = Validator::make($request->all(), [
+            'mode'      => 'required|integer|in:1,2',
+            'city_id'   => 'required_if:mode,1|integer|exists:cities,id',            
+            'lat'       => 'required_if:mode,2|required_with:lng|numeric',        
+            'lng'       => 'required_if:mode,2|required_with:lat|numeric',        
+        ]);
+
+        if ($validator->fails())
+            throw new ValidationException($validator->errors()->first());
+
         $near_by_kitchens = $this->nearByKitchens($request, $location);
 
-        return $near_by_kitchens;
+
+        if ($near_by_kitchens->isEmpty()) 
+            throw new ValidationException("There is no available kitchens in this area");
+        
+            
+        $kitchens_resource = (KitchenResource::collection($near_by_kitchens))->additional(['success' => true, 'message' => 'Available kitchens has been retrived']);
+        return $kitchens_resource->response()->setStatusCode(200);
     }
 
     /**

@@ -16,9 +16,9 @@ class CreateMealsTable extends Migration
         Schema::create('meals', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('bellies');
-            $table->text('comment');
+            $table->text('description');
             $table->text('photo')->nullable();
-            $table->dateTime('expiration_date');
+            $table->dateTime('expiration_date')->nullable();
             $table->integer('stage')->default(0);
             $table->integer('pick_up_location_id')->unsigned()->nullable();
             $table->foreign('pick_up_location_id')->references('id')->on('locations')->onDelete('cascade');

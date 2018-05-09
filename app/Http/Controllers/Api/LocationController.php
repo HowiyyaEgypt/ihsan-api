@@ -39,10 +39,11 @@ class LocationController extends Controller
         $user = $this->APIAuthenticate();
 
         $validator = Validator::make($request->all(), [
-            'city_id'       => 'required|exists:cities,id',
+            'city_id'       => 'integer|exists:cities,id',
             'lat'           => 'required|numeric|between:-90,90',
             'lng'           => 'required|numeric|between:-180,180',
-            'favorite'      => 'nullable|boolean'
+            'favorite'      => 'nullable|boolean',
+            'description'   => 'required|min:3'
         ]);
 
         if ($validator->fails())
@@ -57,7 +58,7 @@ class LocationController extends Controller
         // the result will be a location object
         $location =  $this->createOrRestoreLocation($request, $user, null, 1, 1);
 
-        return response()->json(['success' => true, 'message' => 'A new location is created'], 200);
+        return response()->json(['success' => true, 'message' => 'A new location is created', 'data' => $location], 200);
     }
 
     /**

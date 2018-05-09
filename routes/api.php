@@ -19,8 +19,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 
 // Auth routes
-Route::post('register', 'UserController@register');
+Route::post('signup', 'UserController@signup');
 Route::post('login', 'UserController@login');
+
+// Cities routes
+Route::get('cities', 'CitiesController@allCities');
 
 // Location routes
 Route::get('locations/history', 'LocationController@history');

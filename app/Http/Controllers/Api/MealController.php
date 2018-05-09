@@ -12,12 +12,13 @@ use App\Meal;
 
 use App\Services\APIAuthTrait;
 use App\Http\Resources\Api\Meal\UserMeals;
+use App\Services\MealService;
 
 use App\Exceptions\Api\ValidationException;
 
 class MealController extends Controller
 {
-    use APIAuthTrait;
+    use APIAuthTrait, MealService;
     
     /**
      * The history of the user's meals
@@ -36,6 +37,8 @@ class MealController extends Controller
      */
     public function donate(Request $request)
     {
+        // \Log::info(['req' => $request]);
+
         $user = $this->APIAuthenticate();
 
         $current_time_unix = Carbon::now()->timestamp;
@@ -43,9 +46,11 @@ class MealController extends Controller
         
         $validator = Validator::make($request->all(), [
             'bellies'               => 'required|integer|min:1',
-            'expiration_date'       => 'required|integer|min:'. $valid_meal_ttl ,
-            'pick_up_location_id'   => 'required|exists:locations,id',
-            'kitchen_id'            => 'required|exists:kitchens,id'
+            // 'expiration_date'       => 'required|integer|min:'. $valid_meal_ttl ,
+            'mode'                  => 'integer|in:1,2',
+            'pick_up_location_id'   => 'integer|exists:locations,id',
+            'kitchen_id'            => 'required|exists:kitchens,id',
+            'description'           => 'required|min:5'
         ]);
 
         if ( $validator->fails() ){
@@ -54,5 +59,9 @@ class MealController extends Controller
             }
             throw new ValidationException( $validator->errors()->first() );
         }
+
+        $new_meal = $this->donateNewMeal($user, $request);
+
+        return response()->json(['success' => true, 'message' => 'You successfully added a new meal!', 'data' => $new_meal], 200);
     }
 }

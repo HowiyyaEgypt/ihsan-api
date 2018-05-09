@@ -17,8 +17,8 @@ class CreateOrganizationsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('email')->unique()->nullable();
-            $table->integer('founder_id')->unsigned();
-            $table->foreign('founder_id')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('administrator_id')->unsigned();
+            $table->foreign('administrator_id')->references('id')->on('users')->onDelete('cascade');
             $table->integer('points')->default(1);
             $table->integer('level')->default(1);
             $table->string('photo')->nullable();

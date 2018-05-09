@@ -54,4 +54,34 @@ class Kitchen extends Model
     {
         return $query->where('closing_time', '<=', Carbon::now());
     }
+
+    /**
+     * The city that the kicthen belongs to
+     *
+     * @return void
+     */
+    public function city()
+    {
+        return $this->belongsTo('App\City');
+    }
+
+    /**
+     * The Organization that the kicthen belongs to
+     *
+     * @return void
+     */
+    public function organization()
+    {
+        return $this->belongsTo('App\Organization');
+    }
+
+    /**
+     * The location that the kicthen belongs to
+     *
+     * @return void
+     */
+    public function location()
+    {
+        return $this->belongsTo('App\Location');
+    }
 }

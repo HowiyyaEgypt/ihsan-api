@@ -15,13 +15,14 @@ class CreateLocationsTable extends Migration
     {
         Schema::create('locations', function (Blueprint $table) {
             $table->increments('id');
-            $table->decimal('lng', 10, 7);
             $table->decimal('lat', 10, 8);
+            $table->decimal('lng', 10, 7);
+            $table->string('description');
             $table->boolean('is_visible')->default(true);
             $table->string('locationable_type');
             $table->integer('locationable_id');
             $table->boolean('favorite')->default(false);
-            $table->integer('city_id')->unsigned();
+            $table->integer('city_id')->unsigned()->nullable();
             $table->foreign('city_id')->references('id')->on('cities')->onDelete('cascade');
             $table->timestamps();
         });
