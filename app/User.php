@@ -48,6 +48,23 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * Gets all of the meals for the user that he/she donated for a certain organization
+     * we get the organizaition id from the request (store it manually)
+     */
+    public function mealsDonatedForAnOrganzation($organization_id = null)
+    {
+        if(!is_null($organization_id)) {
+            $kitchens_ids = \App\Kitchen::where('organization_id', $organization_id)->pluck('id')->toArray();
+        } else {
+            $kitchens_ids = request()->get('kitchens_ids');
+        }
+
+        return $this->morphToMany('App\Meal', 'mealable')->whereHas('kitchen', function($q) use ($kitchens_ids) {
+            $q->whereIn('id', $kitchens_ids);
+        })->withTimestamps();
+    }
+
+    /**
      * Get all of the deliveries for the user.
      */
     public function deliveries()
@@ -69,6 +86,46 @@ class User extends Authenticatable implements JWTSubject
     public function organizations()
     {
         return $this->belongsToMany('App\Organization');
+    }
+
+    /**
+     * Get all of the organizations that user can still join
+     */
+    public function avaliableToJoinrOganizations()
+    {
+        $already_joined_organizations_ids = $this->organizations->pluck('id')->toArray();;
+        return \App\Organization::whereNotIn('id',$already_joined_organizations_ids)->get();
+    }
+
+    /**
+     * Get all of the organizations that user can still join - as an attribute
+     */
+    public function getAvaliableToJoinrOganizationsAttribute()
+    {
+        if( $this->relationLoaded( 'avaliableToJoinrOganizations' ) )
+            return $this->relations[ 'avaliableToJoinrOganizations' ];
+
+        $this->setRelation( 'avaliableToJoinrOganizations', $this->avaliableToJoinrOganizations() );
+            return $this->relations[ 'avaliableToJoinrOganizations' ];
+    }
+
+
+    /**
+     * returtns the the meals that a user has donated for an organization
+     */
+    public function mealsDonatedForAnOrganization($organization_id)
+    {
+        $kitchens_ids = \App\Kitchen::where('organization_id', $organization_id)->pluck('id')->toArray();
+
+        return $this->meals()->whereIn('kitchen_id', $kitchens_ids)->get();
+    }
+
+    /**
+     * returtns the count of the meals that a user has donated for an organization
+     */
+    public function mealsDonatedForAnOrganizationCount($organization_id)
+    {
+        return $this->mealsDonatedForAnOrganization($organization_id)->count();
     }
 
     /**

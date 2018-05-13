@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use DB;
 
 class Organization extends Model
 {
@@ -14,7 +15,7 @@ class Organization extends Model
     protected $fillable = [
         'name',
         'email',
-        'founder_id',
+        'administrator_id',
         'points',
         'level',
         'photo',
@@ -22,11 +23,11 @@ class Organization extends Model
     ];
 
     /**
-     * the founder of the organization
+     * the administrator of the organization
      */
-    public function founder()
+    public function administrator()
     {
-        return $this->belongsTo('App\User', 'founder_id');
+        return $this->belongsTo('App\User', 'administrator_id');
     }
 
     /**
@@ -38,6 +39,22 @@ class Organization extends Model
     }
 
     /**
+     * Checks if the auth user can manage this organization or not
+     */
+    public function canManage()
+    {
+        $pivot = DB::table('organization_user')
+                ->where('organization_id', $this->id)
+                ->where('user_id', auth()->user()->id)
+                ->first();
+
+        if(!empty($pivot) && $pivot->can_manage == true)
+            return true;
+        else
+            return false;
+    }
+
+    /**
      * Get all of the locations for the organization.
      */
     public function locations()
@@ -46,11 +63,19 @@ class Organization extends Model
     }
 
     /**
-     * Get all of the meals for the organization.
+     * Get all of the meals for the organization - which the organization has donated itself.
      */
-    public function meals()
+    public function originalMeals()
     {
         return $this->morphToMany('App\Meal', 'mealable');
+    }
+
+    /**
+     * Get all of the meals for the organization - which was donated to the organization.
+     */
+    public function donatedMeals()
+    {
+        return $this->hasManyThrough('App\Meal', 'App\Kitchen');
     }
 
     /**

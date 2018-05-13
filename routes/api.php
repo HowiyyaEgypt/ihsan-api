@@ -31,7 +31,12 @@ Route::post('locations/add', 'LocationController@add');
 Route::post('locations/{location}/delete', 'LocationController@delete');
 
 // Organizations routes
-Route::post('organization/register', 'OrganizationController@register');
+Route::post('organizations/register', 'OrganizationController@register');
+Route::get('organizations/all','OrganizationController@all');
+Route::get('organizations/mixed','OrganizationController@mixed');
+Route::get('organizations/{organization}/view','OrganizationController@view');
+Route::post('organizations/{organization}/join','OrganizationController@join');
+Route::post('organizations/{organization}/leave','OrganizationController@leave');
 
 // Kitchens routes
 Route::get('kitchens/nearby/{location?}', 'KitchenController@nearby');

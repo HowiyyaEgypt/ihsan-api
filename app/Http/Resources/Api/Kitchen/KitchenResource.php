@@ -30,6 +30,7 @@ class KitchenResource extends JsonResource
             'location_lng' => $this->location->lng,
             'opening_time' => $this->opening_time,
             'closing_time' => $this->closing_time,
+            'meals_count' => $this->meals()->count(),
             'is_opened' => (boolean) $this->is_opened,
         ];
     }

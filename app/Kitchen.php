@@ -34,6 +34,17 @@ class Kitchen extends Model
     }
 
     /**
+     * A scope for kitches which is closed
+     *
+     * @param [type] $query
+     * @return void
+     */
+    public function scopeIsClosed($query)
+    {
+        return $query->where('is_opened', false);
+    }
+
+    /**
      * A scope for kitches which is still opened - closing time is not due yet
      *
      * @param [type] $query
@@ -83,5 +94,15 @@ class Kitchen extends Model
     public function location()
     {
         return $this->belongsTo('App\Location');
+    }
+
+    /**
+     * The meals of the kitchen
+     *
+     * @return void
+     */
+    public function meals()
+    {
+        return $this->hasMany('App\Meal');
     }
 }
