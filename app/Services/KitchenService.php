@@ -27,7 +27,7 @@ trait KitchenService {
             // we search using the city id
             case 1:
 
-                $nearby_kitchens = Kitchen::where('city_id', $request->get('city_id'))->with(['city','organization','location'])->get();
+                $nearby_kitchens = Kitchen::where('city_id', $request->get('city_id'))->stillHasTime()->with(['city','organization','location'])->get();
                 break;
 
             
@@ -55,15 +55,16 @@ trait KitchenService {
      * @param Organization $organization
      * @return void
      */
-    public function createNewKitchen(Request $request, Organization $organization, $source)
+    public function createNewKitchen(Request $request, Organization $organization, $existing_location = null, $source)
     {
         // setting input
         $name = $request->get('name');    
-        $comment = $request->get('comment');    
-        $location_id = $request->get('location_id');    
+        $description = $request->get('description');    
+        $location_id = is_null($existing_location) ? $request->get('location_id') : $existing_location->id;    
+        $city_id = $request->get('city_id');
         $opening_time = Carbon::createFromTimestamp($request->get('opening_time'), 'Africa/Cairo');
         $closing_time = Carbon::createFromTimestamp($request->get('closing_time'), 'Africa/Cairo');
-        $is_opened = !empty($request->get('is_opened')) ? $request->get('is_opened') : false;
+        $is_opened = !empty($request->get('is_opened')) ? $request->get('is_opened') : true;
         $organization_id = $organization->id;
 
         // kitchens where closing_time >= now
@@ -109,17 +110,20 @@ trait KitchenService {
 
             }
 
-        } 
+        }
 
+    
         $kitchen = Kitchen::create(['name' => $name,
-        'comment' => $comment,
+        'description' => $description,
         'organization_id' => $organization_id,
         'location_id' => $location_id,
+        'city_id' => $city_id,
         'opening_time' => $opening_time,
         'closing_time' => $closing_time,
         'is_opened' => $is_opened]);
 
         return $kitchen;
+
     }
 
 }

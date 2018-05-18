@@ -14,6 +14,7 @@ use App\Organization;
 use App\Location;
 use App\Services\APIAuthTrait;
 use App\Services\OrganizationService;
+use App\Services\LocationService;
 use App\Services\KitchenService;
 use App\Http\Resources\Api\Kitchen\KitchenResource;
 
@@ -23,7 +24,7 @@ use App\Exceptions\Api\ValidationException;
 class KitchenController extends Controller
 {
     
-    use APIAuthTrait, OrganizationService, KitchenService;
+    use APIAuthTrait, OrganizationService, KitchenService, LocationService;
 
     /**
      * nearby kitchens - accessible by all
@@ -106,13 +107,20 @@ class KitchenController extends Controller
         // OrganizationService check, it will handle error itself, '1' is for API
         $this->canManage($user, $organization, 1);
 
-        $now_unix = Carbon::now()->subMinutes(10)->timestamp; // now minus 10 minutes, for request delays
-        $kitchen_ttl = Carbon::now()->addMinutes(60);   // the kitchen lifespan must be at least an hour
+        \Log::info(['req' => $request]);
+
+        $thirty_minutes_ago = Carbon::now('Africa/Cairo')->subMinutes(30)->timestamp; // now minus 30 minutes
+        $kitchen_ttl = Carbon::now('Africa/Cairo')->addMinutes(60);   // the kitchen lifespan must be at least an hour
 
         $validator = Validator::make($request->all(), [
+            'mode'          => 'required|integer|between:1,2',
             'name'          => 'required|min:5',
-            'location_id'   => 'required|exists:locations,id',
-            'opening_time'  => 'required|integer|min:'. $now_unix,
+            'description'   => 'required|min:5',
+            'city_id'       => 'required|exists:cities,id',
+            'location_id'   => 'required_without:lat,lng',
+            'lat'           => 'required_without:location_id|numeric|between:-90,90',
+            'lng'           => 'required_without:location_id|numeric|between:-180,180',
+            'opening_time'  => 'required|integer|min:'. $thirty_minutes_ago,
             'closing_time'  => 'required|integer|min:'. $kitchen_ttl,
             'is_opened'     => 'nullable|boolean'
         ]);
@@ -120,9 +128,22 @@ class KitchenController extends Controller
         if ($validator->fails())
             throw new ValidationException($validator->errors()->first());
 
-        // 1 is the source - API
-        // to throw exception in case of trying to create another kitchen in the same place at the same time
-        $kitchen = $this->createNewKitchen($request, $organization, 1);
+        // if mode == 2, then the admin is trying to create the kitchen in a new location
+        // so we will create a new location the pass it to the kitchen trait
+        // '2' param is for mode == organization
+        // '1' param for api source
+        if($request->get('mode') == 2) {
+            $location =  $this->createOrRestoreLocation($request, $user, $organization, 2, 1);
+
+            if (!empty($location)) {
+                $kitchen = $this->createNewKitchen($request, $organization, $location, 1);
+            }
+        } 
+        else {
+            // 1 is the source - API
+            // to throw exception in case of trying to create another kitchen in the same place at the same time
+            $kitchen = $this->createNewKitchen($request, $organization, null, 1);
+        }
 
         return response()->json(['success' => true, 'message' => 'A new kitchen is created'], 200);
     }

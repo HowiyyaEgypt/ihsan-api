@@ -13,6 +13,7 @@ use App\Services\APIAuthTrait;
 use App\Services\OrganizationService;
 use App\Http\Resources\Api\Organization\OrganizationsResource;
 use App\Http\Resources\Api\Organization\ComplexOrganizationResource;
+use App\Http\Resources\Api\Organization\OrganizationLocationUtilsResource;
 use App\Http\Resources\Api\User\MixedOrganizations;
 
 use App\Exceptions\Api\ValidationException;
@@ -55,13 +56,15 @@ class OrganizationController extends Controller
     }
 
     /**
-     * view an organization - accessed by all
+     * view an organization
      *
      * @param Request $request
      * @return void
      */
     public function view(Request $request, Organization $organization)
     {
+        $user = $this->APIAuthenticate();
+        
         // to access them from the api resource
         $request->request->add(['organization_id' => $organization->id]);
         $request->request->add(['kitchens_ids' => $organization->kitchens->pluck('id')->toArray() ]);
@@ -149,5 +152,21 @@ class OrganizationController extends Controller
         $organization =  $this->createNewOrganization($request, $user);
 
         return response()->json(['success' => true, 'message' => 'A new organization is created'], 200);
+    }
+
+    /**
+     * in the app, when we need to open a new kitchen, we go to an activity where we need to choose the city & location of the kitchen
+     * so we need to provide the app with the necessary data
+     * all the cities + all the locations of the organization
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function location_utils(Request $request, Organization $organization)
+    {
+        $location_utils_resource = (new OrganizationLocationUtilsResource($organization))->additional(['success' => true, 'message' => 'Utils has been retreived']);
+
+        return $location_utils_resource->response()->setStatusCode(200);
+        
     }
 }

@@ -21,6 +21,7 @@ class ComplexOrganizationResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'can_manage' => $this->canManage(),
             'administrator_name' => $this->administrator->name,
             'total_kitchens_count' => $this->kitchens->count(),
             'locations_count' => $this->locations->count(),

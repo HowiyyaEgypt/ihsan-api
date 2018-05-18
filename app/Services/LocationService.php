@@ -33,11 +33,29 @@ trait LocationService {
         $description = $request->get('description');
 
 
-        // check if the user already has the same location
-        $location = $user->locations()
-        ->where('lat',$lat)
-        ->where('lng',$lng)
-        ->first();
+        // check if the user / organization already has the same location
+
+        switch ($mode) {
+
+            case 1:
+
+                $location = $user->locations()
+                ->where('lat',$lat)
+                ->where('lng',$lng)
+                ->first();
+
+            break;
+
+            case 2:
+
+                $location = $organization->locations()
+                ->where('lat',$lat)
+                ->where('lng',$lng)
+                ->first();
+
+            break;
+
+        }
 
         // if empty, we will create it
         if (empty($location)) {
@@ -102,11 +120,11 @@ trait LocationService {
         if(is_null($favorite)) {
             $favorite = false;
         }
-
-        $location = Location::create(['description' => $description, 'lat' =>$lat , 'lng' =>$lng , 'city_id' => $city_id, 'locationable_type' => 'App\User', 'locationable_id' => $user->id, 'favorite' => $favorite ]); 
         
         switch ($mode) {
             case 1:
+
+                $location = Location::create(['description' => $description, 'lat' =>$lat , 'lng' => $lng , 'city_id' => $city_id, 'locationable_type' => 'App\User', 'locationable_id' => $user->id, 'favorite' => $favorite ]); 
 
                 if ($favorite === true) {
                     $user->locations()
@@ -118,6 +136,16 @@ trait LocationService {
             break;
 
             case 2:
+
+                $location = Location::create(['description' => $description, 'lat' => $lat , 'lng' => $lng , 'city_id' => $city_id, 'locationable_type' => 'App\Organization', 'locationable_id' => $organization->id, 'favorite' => $favorite ]); 
+
+                if ($favorite === true) {
+                    $organization->locations()
+                    ->where('favorite', true)
+                    ->where('id', '!=', $location->id)
+                    ->update(['favorite' => false]);
+                }
+
             break;
         }
 

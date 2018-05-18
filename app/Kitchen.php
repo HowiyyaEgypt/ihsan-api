@@ -14,12 +14,13 @@ class Kitchen extends Model
      */
     protected $fillable = [
         'name',
-        'comment',
+        'description',
         'organization_id',
         'location_id',
         'opening_time',
         'closing_time',
-        'is_opened'
+        'is_opened',
+        'city_id'
     ];
 
     /**

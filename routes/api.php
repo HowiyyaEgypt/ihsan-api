@@ -37,6 +37,7 @@ Route::get('organizations/mixed','OrganizationController@mixed');
 Route::get('organizations/{organization}/view','OrganizationController@view');
 Route::post('organizations/{organization}/join','OrganizationController@join');
 Route::post('organizations/{organization}/leave','OrganizationController@leave');
+Route::get('organizations/{organization}/location/utils','OrganizationController@location_utils');
 
 // Kitchens routes
 Route::get('kitchens/nearby/{location?}', 'KitchenController@nearby');

@@ -20,7 +20,7 @@ class KitchenResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'comment' => $this->comment,
+            'description' => $this->description,
             'city_id' => $this->city->id,
             'city_name' => $this->city->name_en,
             'organization_id' => $this->organization->id,
