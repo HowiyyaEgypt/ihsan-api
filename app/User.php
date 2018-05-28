@@ -69,7 +69,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function deliveries()
     {
-        return $this->morphToMany('App\Meal', 'deliverable');
+        return $this->morphToMany('App\Delivery', 'deliverable');
     }
 
     /**
@@ -85,7 +85,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function organizations()
     {
-        return $this->belongsToMany('App\Organization');
+        return $this->belongsToMany('App\Organization')->withPivot('can_manage');
     }
 
     /**

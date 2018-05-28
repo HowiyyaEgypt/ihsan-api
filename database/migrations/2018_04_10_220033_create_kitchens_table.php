@@ -25,7 +25,7 @@ class CreateKitchensTable extends Migration
             $table->foreign('location_id')->references('id')->on('locations')->onDelete('cascade');
             $table->dateTime('opening_time');
             $table->dateTime('closing_time');
-            $table->boolean('is_opened')->default(false);
+            $table->boolean('is_opened')->default(true);
             $table->timestamps();
         });
     }

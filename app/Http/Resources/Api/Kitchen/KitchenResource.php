@@ -4,6 +4,7 @@ namespace App\Http\Resources\Api\Kitchen;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Kitchen;
+use Carbon\Carbon;
 
 class KitchenResource extends JsonResource
 {
@@ -28,8 +29,8 @@ class KitchenResource extends JsonResource
             'location_id' => $this->location->id,
             'location_lat' => $this->location->lat,
             'location_lng' => $this->location->lng,
-            'opening_time' => $this->opening_time,
-            'closing_time' => $this->closing_time,
+            'opening_time' =>( new Carbon($this->opening_time) )->toDateTimeString(),
+            'closing_time' =>( new Carbon($this->closing_time) )->toDateTimeString(),
             'meals_count' => $this->meals()->count(),
             'is_opened' => (boolean) $this->is_opened,
         ];

@@ -17,6 +17,7 @@ use App\Services\OrganizationService;
 use App\Services\LocationService;
 use App\Services\KitchenService;
 use App\Http\Resources\Api\Kitchen\KitchenResource;
+use App\Http\Resources\Api\Kitchen\ComplexKitchenResource;
 
 use App\Exceptions\Api\ValidationException;
 
@@ -56,6 +57,27 @@ class KitchenController extends Controller
     }
 
     /**
+     * gets an overview of a certian kitchen
+     * how many meals already delivered
+     * how many meals currently being delivered
+     * how many meals need to be delivered
+     * opening / closing time
+     * location
+     *
+     * @param Request $request
+     * @param Kitchen $kitchen
+     * @return void
+     */
+    public function view(Request $request, Kitchen $kitchen)
+    {
+        $user = $this->APIAuthenticate();
+
+        $kitchens_resource = (new ComplexKitchenResource($kitchen))->additional(['success' => true, 'message' => 'Kitchen has been retrived']);
+
+        return $kitchens_resource->response()->setStatusCode(200);
+    }
+
+    /**
      * today's kitchens - accessible by all
      *
      * @param Request $request
@@ -63,10 +85,7 @@ class KitchenController extends Controller
      */
     public function today(Request $request, Organization $organization)
     {
-        $user = $this->APIAuthenticate();
-
         
-
     }
 
     /**
@@ -77,8 +96,6 @@ class KitchenController extends Controller
      */
     public function upcomming(Request $request, Organization $organization)
     {
-        $user = $this->APIAuthenticate();
-
         
     }
 
@@ -90,7 +107,6 @@ class KitchenController extends Controller
      */
     public function history(Request $request, Organization $organization)
     {
-        $user = $this->APIAuthenticate();
 
     }
 
@@ -145,7 +161,9 @@ class KitchenController extends Controller
             $kitchen = $this->createNewKitchen($request, $organization, null, 1);
         }
 
-        return response()->json(['success' => true, 'message' => 'A new kitchen is created'], 200);
+        $kitchens_resource = (new ComplexKitchenResource($kitchen))->additional(['success' => true, 'message' => 'A new kitchen is created']);
+
+        return $kitchens_resource->response()->setStatusCode(200);
     }
 
     /**

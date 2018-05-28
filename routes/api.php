@@ -41,6 +41,7 @@ Route::get('organizations/{organization}/location/utils','OrganizationController
 
 // Kitchens routes
 Route::get('kitchens/nearby/{location?}', 'KitchenController@nearby');
+Route::get('kitchens/{kitchen}/view', 'KitchenController@view');
 Route::get('kitchens/{organization}/today', 'KitchenController@today');
 Route::get('kitchens/{organization}/upcomming', 'KitchenController@upcomming');
 Route::get('kitchens/{organization}/history', 'KitchenController@history');
@@ -56,9 +57,14 @@ Route::get('meals/{meal}/track', 'MealController@track');
 // Donate delivering a meal
 Route::get('meals/nearby/auto');
 Route::get('meals/nearby/{location}');
-Route::post('deliver/{meal}');
+Route::post('deliver/{meal}/{kitchen}','DeliveryController@pickForDelivery');
+Route::post('deliver/{meal}/cancel/{delivery}','DeliveryController@cancelDelivery');
+Route::post('deliver/{meal}/confirm/{delivery}','DeliveryController@confirmMealReception');
 
 // Donate a money donation
+
+// Tracking history
+Route::get('tracking','TrackingController@all');
 
 // follow / unfollow someone
 

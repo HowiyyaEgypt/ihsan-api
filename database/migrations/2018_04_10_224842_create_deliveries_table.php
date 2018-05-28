@@ -15,16 +15,16 @@ class CreateDeliveriesTable extends Migration
     {
         Schema::create('deliveries', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->text('photo')->nullable();
-            $table->dateTime('pickup_date');
-            $table->dateTime('delivery_date');
+            $table->dateTime('pickup_date')->nullable();
+            $table->dateTime('delivery_date')->nullable();
             $table->integer('meal_id')->unsigned();
             $table->foreign('meal_id')->references('id')->on('meals')->onDelete('cascade');
             $table->integer('pick_up_location_id')->unsigned()->nullable();
             $table->foreign('pick_up_location_id')->references('id')->on('locations')->onDelete('cascade');
-            $table->integer('drop_location_id')->unsigned()->nullable();
-            $table->foreign('drop_location_id')->references('id')->on('locations')->onDelete('cascade');
+            $table->integer('kitchen_id')->unsigned()->nullable();
+            $table->foreign('kitchen_id')->references('id')->on('kitchens')->onDelete('cascade');
             $table->timestamps();
         });
     }

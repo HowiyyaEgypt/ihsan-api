@@ -67,14 +67,6 @@ class Location extends Model
     }
 
     /**
-     * The deliveries that was picked up from this location
-     */
-    public function dropedDeliveries()
-    {
-        return $this->hasMany('App\Delivery', 'drop_location_id');
-    }
-
-    /**
      * The donations that was donated at this location
      */
     public function donations()

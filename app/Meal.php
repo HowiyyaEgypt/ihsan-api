@@ -60,4 +60,37 @@ class Meal extends Model
     {
         return $this->morphedByMany('App\Organization', 'mealable');
     }
+
+    /**
+     * The meals that needs to be delivered
+     *
+     * @param [type] $query
+     * @return void
+     */
+    public function scopeNeedsToBeDelivered($query)
+    {
+        return $query->where('stage', 0);
+    }
+
+    /**
+     * The meals that are currently being delivered
+     *
+     * @param [type] $query
+     * @return void
+     */
+    public function scopeCurrentlyBeingDelivered($query)
+    {
+        return $query->whereIn('stage', [1,2]);
+    }
+
+    /**
+     * The meals that has reached and received by the kitchen
+     *
+     * @param [type] $query
+     * @return void
+     */
+    public function scopeReceivedByKitchen($query)
+    {
+        return $query->where('stage', 3);
+    }
 }
