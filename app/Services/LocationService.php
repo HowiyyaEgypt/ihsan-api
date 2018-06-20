@@ -26,8 +26,8 @@ trait LocationService {
         // the value we will return later
         $location = null;
 
-        $lat = $request->get('lat');    
-        $lng = $request->get('lng');    
+        $lat = round($request->get('lat'),8);    
+        $lng = round($request->get('lng'),7);    
         $city_id = $request->get('city_id');    
         $favorite = $request->get('favorite');
         $description = $request->get('description');
@@ -39,19 +39,19 @@ trait LocationService {
 
             case 1:
 
-                $location = $user->locations()
-                ->where('lat',$lat)
-                ->where('lng',$lng)
+                $location = $user->locations
+                ->where('lat', 'like', $lat)
+                ->where('lng', 'like' ,$lng)
                 ->first();
 
             break;
 
             case 2:
 
-                $location = $organization->locations()
-                ->where('lat',$lat)
-                ->where('lng',$lng)
-                ->first();
+                $location = $organization->locations
+                ->where('lat', 'like', $lat)
+                ->where('lng', 'like', $lng)
+                ->first(); 
 
             break;
 

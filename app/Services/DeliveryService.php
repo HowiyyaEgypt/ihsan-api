@@ -9,6 +9,10 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exceptions\Api\ValidationException;
+use App\Events\Delivery\NewMealWasPickedForDelivery;
+use App\Events\Delivery\MealDeliveryWasCancelled;
+use App\Events\Delivery\NewMealWasReceivedByVolunteer;
+use App\Events\Delivery\NewMealWasDelivered;
 
 trait DeliveryService {
 
@@ -60,6 +64,8 @@ trait DeliveryService {
 
         // attaching the delivery to a user
         $delivery->users()->sync($user);
+
+        event(new NewMealWasPickedForDelivery($user, $delivery));
         
         return $delivery;
     }
@@ -98,10 +104,14 @@ trait DeliveryService {
             }
         }
 
+        $old_delivery = clone $delivery;
+
         $delivery->delete();
 
         // updating the meal status
         $meal->update(['stage' => 0]);
+
+        event(new MealDeliveryWasCancelled($user, $old_delivery, $meal));
 
         return $meal;
     }
@@ -138,10 +148,6 @@ trait DeliveryService {
             // case 2 : kitchen admin
             case 2:
 
-            \Log::info(['u0' => empty($user->organiztions)]);
-            \Log::info(['u1' => $user->organizations->contains($organization)]);
-            \Log::info(['u2' => $organization->canManage()]);
-
                 if(empty($user->organizations)  || !$user->organizations->contains($organization) || !$organization->canManage()) 
                     $err = "You are not allowed to confirm this delivery";
                 elseif ($meal->stage == 0 || empty($meal->delivery))
@@ -173,6 +179,8 @@ trait DeliveryService {
                 // updating pickup date
                 $delivery->update(['pickup_date' => Carbon::now()]);
 
+                event(new NewMealWasReceivedByVolunteer($user, $delivery));
+                
             break;
 
             case 2:
@@ -182,6 +190,8 @@ trait DeliveryService {
 
                 // updating pickup date
                 $delivery->update(['delivery_date' => Carbon::now()]);
+
+                event(new NewMealWasDelivered($user, $delivery, $mode));
 
             break;
 

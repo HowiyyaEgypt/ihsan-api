@@ -63,6 +63,14 @@ class Organization extends Model
     }
 
     /**
+     * Get all of the feeds for the organization.
+     */
+    public function feeds()
+    {
+        return $this->morphMany('App\Feed', 'feedable');
+    }
+
+    /**
      * Get all of the meals for the organization - which the organization has donated itself.
      */
     public function originalMeals()

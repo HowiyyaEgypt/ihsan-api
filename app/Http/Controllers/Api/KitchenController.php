@@ -123,7 +123,7 @@ class KitchenController extends Controller
         // OrganizationService check, it will handle error itself, '1' is for API
         $this->canManage($user, $organization, 1);
 
-        \Log::info(['req' => $request]);
+        // \Log::info(['req' => $request]);
 
         $thirty_minutes_ago = Carbon::now('Africa/Cairo')->subMinutes(30)->timestamp; // now minus 30 minutes
         $kitchen_ttl = Carbon::now('Africa/Cairo')->addMinutes(60);   // the kitchen lifespan must be at least an hour

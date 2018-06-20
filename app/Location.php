@@ -43,6 +43,14 @@ class Location extends Model
     }
 
     /**
+     * the city of the location
+     */
+    public function city()
+    {
+        return $this->belongsTo('App\City', 'city_id');
+    }
+
+    /**
      * The meals that was picked up from this location
      */
     public function pickUpMeals()

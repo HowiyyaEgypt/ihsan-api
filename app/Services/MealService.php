@@ -7,6 +7,7 @@ use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exceptions\Api\ValidationException;
+use App\Events\Meal\NewMealWasDonated;
 
 trait MealService {
 
@@ -30,9 +31,9 @@ trait MealService {
         }
 
         if (!empty($request->get('pickup_location_id'))) {
-            // TODO: fire event to organization to let them know that they need to get the meal
+            event(new NewMealWasDonated($user, $meal, 1));
         } else {
-            // TODO: fire event to organiztion to let them know that there is meal coming to them
+            event(new NewMealWasDonated($user, $meal, 2));
         }
 
         return $meal;

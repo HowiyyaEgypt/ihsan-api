@@ -8,6 +8,7 @@ use App\Location;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Exceptions\Api\ValidationException;
+use App\Events\Kitchen\NewKitchenWasOpened;
 
 trait KitchenService {
 
@@ -121,6 +122,9 @@ trait KitchenService {
         'opening_time' => $opening_time,
         'closing_time' => $closing_time,
         'is_opened' => $is_opened]);
+
+        // firing the event
+        event(new NewKitchenWasOpened(auth()->user(), $kitchen));
 
         return $kitchen;
 

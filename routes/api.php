@@ -67,5 +67,12 @@ Route::post('deliver/{meal}/confirm/{delivery}','DeliveryController@confirmMealR
 Route::get('tracking','TrackingController@all');
 
 // follow / unfollow someone
+Route::get('followers', 'ProfileController@followers');
+Route::get('following', 'ProfileController@following');
+Route::post('follow/{user}', 'ProfileController@follow');
+Route::post('unfollow/{user}', 'ProfileController@unfollow');
 
 // update profile
+
+// feeds
+Route::get('feeds', 'FeedController@latestFeeds');

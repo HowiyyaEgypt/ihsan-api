@@ -40,11 +40,47 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * Get all of the feeds for the user.
+     */
+    public function feeds()
+    {
+        return $this->morphMany('App\Feed', 'feedable')->withTimestamps();
+    }
+
+    /**
      * Get all of the meals for the user.
      */
     public function meals()
     {
         return $this->morphToMany('App\Meal', 'mealable')->withTimestamps();
+    }
+
+    /**
+     * The followers of a user
+     *
+     * @return void
+     */
+    public function followers()
+    {
+        return $this->belongsToMany('App\User', 'followers', 'user_id', 'follower_id');
+    }
+
+    /**
+     * The followers that a user follows
+     *
+     * @return void
+     */
+    public function following()
+    {
+        return $this->belongsToMany('App\User', 'followers', 'follower_id', 'user_id');
+    }
+
+    /**
+     * User Devices Relation
+     */
+    public function devices()
+    {
+        return $this->hasMany('App\FcmUser');
     }
 
     /**
